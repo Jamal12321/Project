@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .result-container {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: rgba(0,0,0,0.8);
+            color: whitesmoke;
+            border-radius: 10px;
+            text-align: center;
+            display: none;
+        }
+
+        .back-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: gray;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .back-button:hover {
+            opacity: 0.9;
+        }
+
+        #Prediction {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            background: black;
+            object-fit: cover;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .button, .predict-button {
+            font-size: 24px;
+            color: black;
+            background-color: darkgray;
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .predict-button {
+            background-color: rebeccapurple;
+            color: white;
+            margin-top: 20px;
+            margin-bottom: 40px;
+        }
+
+        .predict-button:hover {
+            opacity: 0.9;
+        }
+
+        .teams-row {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .header {
+            text-align: center;
+            font-weight: bold;
+            font-size: 60px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            color: whitesmoke;
+        }
+
+        .hide-me {
+            margin-top: auto;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <p class="header hide-me" style="font-family: Arial Black;">Football guru ⚽</p>
+    <img src="/static/footbal_background.jpg" alt="" class="image">
+    
+    <div class="container hide-me">
+        <select id="League" class="button">
+            <option value="">Выберите лигу</option>
+            <option value="PL">EPL</option>
+            <option value="BL1">Bundesliga</option>
+            <option value="FL1">League 1</option>
+            <option value="SA">Serie A</option>
+            <option value="PD">La Liga</option>
+        </select>
+        
+        <div class="teams-row">
+            <select id="hosts" class="button">
+                <option value="">Сначала выберите лигу</option>
+            </select>
+            <select id="guests" class="button">
+                <option value="">Сначала выберите лигу</option>
+            </select>
+        </div>
+        
+        <button id="predict_button" class="predict-button">Предсказать матч</button>
+    </div>
+
+    <video id="Prediction" style="display: none;" muted loop>
+        <source src="/static/video/loading.mp4" type="video/mp4">
+    </video>
+
+    <div id="result" class="result-container">
+        <div id="result-content"></div>
+        <button id="back-button" class="back-button">Новый прогноз</button>
+    </div>
+
+    <script>
+        let selectElement = document.getElementById('League');
+        let video = document.getElementById('Prediction');
+        let predictButton = document.getElementById('predict_button');
+        let resultContainer = document.getElementById('result');
+        let resultContent = document.getElementById('result-content');
+        let backButton = document.getElementById('back-button');
+
+        selectElement.addEventListener('change', function() {
+            let chooseValue = selectElement.value;
+            if (!chooseValue) return;
+            
+            fetch('/get_teams?league=' + chooseValue)
+                .then(response => response.json())
+                .then(data => {
+                    let hosts = document.getElementById('hosts');
+                    let guests = document.getElementById('guests');
+                    
+                    hosts.innerHTML = '';
+                    guests.innerHTML = '';
+                    
+                    let defaultOption = document.createElement('option');
+                    defaultOption.value = '';
+                    defaultOption.text = 'Выберите команду';
+                    defaultOption.selected = true;
+                    defaultOption.disabled = true;
+                    
+                    hosts.appendChild(defaultOption);
+                    guests.appendChild(defaultOption.cloneNode(true));
+                    
+                    data.forEach(team => {
+                        let opt1 = document.createElement('option');
+                        opt1.value = team;
+                        opt1.text = team;
+                        hosts.appendChild(opt1);
+                        
+                        let opt2 = document.createElement('option');
+                        opt2.value = team;
+                        opt2.text = team;
+                        guests.appendChild(opt2);
+                    });
+                })
+                .catch(error => console.log('Ошибка загрузки команд:', error));
+        });
+
+        predictButton.addEventListener('click', function() {
+            let hosts = document.getElementById('hosts').value;
+            let guests = document.getElementById('guests').value;
+            
+            if (!hosts || !guests) {
+                alert('Сначала выберите обе команды!');
+                return;
+            }
+            if (hosts === guests) {
+                alert('Вы выбрали одинаковые команды!');
+                return;
+            }
+            
+            let hideElements = document.getElementsByClassName('hide-me');
+            for (let i = 0; i < hideElements.length; i++) {
+                hideElements[i].classList.add('hidden');
+            }
+            
+            video.style.display = 'block';
+            video.play();
+            
+            setTimeout(() => {
+                fetch('/predict?team1=' + encodeURIComponent(hosts) + '&team2=' + encodeURIComponent(guests))
+                    .then(response => response.json())
+                    .then(data => {
+                        video.style.display = 'none';
+                        video.pause();
+                        
+                        resultContent.innerHTML = `
+                            <h3>${data.team1} vs ${data.team2}</h3>
+                            <p>🏠 Победа ${data.team1}: ${(data.home_win * 100).toFixed(1)}%</p>
+                            <p>🤝 Ничья: ${(data.draw * 100).toFixed(1)}%</p>
+                            <p>✈️ Победа ${data.team2}: ${(data.away_win * 100).toFixed(1)}%</p>
+                        `;
+                        resultContainer.style.display = 'block';
+                        console.log('Данные сервера:', data);
+                    })
+                    .catch(error => {
+                        console.log('Ошибка:', error);
+                        video.style.display = 'none';
+                        video.pause();
+                        alert('Ошибка при получении предсказания');
+                    });
+            }, 3500);
+        });
+
+        backButton.addEventListener('click', function() {
+            resultContainer.style.display = 'none';
+            let hideElements = document.getElementsByClassName('hide-me');
+            for (let i = 0; i < hideElements.length; i++) {
+                hideElements[i].classList.remove('hidden');
+            }
+            document.getElementById('hosts').innerHTML = '<option value="">Сначала выберите лигу</option>';
+            document.getElementById('guests').innerHTML = '<option value="">Сначала выберите лигу</option>';
+            document.getElementById('League').value = '';
+        });
+    </script>
+</body>
+</html>
