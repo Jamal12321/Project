@@ -1,0 +1,82 @@
+{
+  "Arsenal FC": {
+    "wins": 3,
+    "draws": 1,
+    "losses": 1
+  },
+  "Aston Villa FC": {
+    "wins": 1,
+    "draws": 1,
+    "losses": 3
+  },
+  "Chelsea FC": {
+    "wins": 0,
+    "draws": 0,
+    "losses": 5
+  },
+  "Everton FC": {
+    "wins": 3,
+    "draws": 1,
+    "losses": 1
+  },
+  "Fulham FC": {
+    "wins": 1,
+    "draws": 2,
+    "losses": 2
+  },
+  "Genoa CFC": {
+    "wins": 3,
+    "draws": 0,
+    "losses": 2
+  },
+  "FC Internazionale Milano": {
+    "wins": 3,
+    "draws": 2,
+    "losses": 0
+  },
+  "Juventus FC": {
+    "wins": 4,
+    "draws": 1,
+    "losses": 0
+  },
+  "SS Lazio": {
+    "wins": 3,
+    "draws": 1,
+    "losses": 1
+  },
+  "Parma Calcio 1913": {
+    "wins": 1,
+    "draws": 2,
+    "losses": 2
+  },
+  "SSC Napoli": {
+    "wins": 3,
+    "draws": 1,
+    "losses": 1
+  },
+  "Udinese Calcio": {
+    "wins": 2,
+    "draws": 1,
+    "losses": 2
+  },
+  "Hellas Verona FC": {
+    "wins": 1,
+    "draws": 0,
+    "losses": 4
+  },
+  "US Cremonese": {
+    "wins": 1,
+    "draws": 1,
+    "losses": 3
+  },
+  "US Sassuolo Calcio": {
+    "wins": 2,
+    "draws": 1,
+    "losses": 2
+  },
+  "AC Pisa 1909": {
+    "wins": 1,
+    "draws": 0,
+    "losses": 4
+  }
+}
