@@ -7,7 +7,8 @@ from bs4 import BeautifulSoup
 from env import SECRET_KEY, PARSING_KEY
 import random
 os.system('pip install -r requirements.txt > nul 2>&1')
-
+SECRET_KEY = os.getenv('SECRET_KEY')
+PARSING_KEY = os.getenv('PARSING_KEY')
 app = Flask(__name__)
 app.secret_key = SECRET_KEY
 
