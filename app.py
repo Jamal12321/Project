@@ -98,7 +98,6 @@ def predict():
 if total > 0:
     home_win = (home_power / total) * (1 - base_draw)
     away_win = (away_power / total) * (1 - base_draw)
-    draw = base_draw
 else:
     home_win = 0.37
     away_win = 0.38
