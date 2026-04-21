@@ -87,18 +87,22 @@ def predict():
     power2 = (form2['wins'] * 2 + form2['draws'] * 1) / 5
 
     home_power = power1 * 1.2
-    away_power = power2 * 0.9
+    away_power = power2 * 0.7
     
     total = home_power + away_power
     
-    if total > 0:
-        home_win = round(home_power / total, 2)
-        away_win = round(away_power / total, 2)
-        draw = round(1 - home_power - away_power, 2)
-    else:
-        home_win = 0.33
-        draw = 0.34
-        away_win = 0.33
+    base_draw = 0.25
+    power_diff = abs(norm_power1 - norm_power2)
+
+    draw = 0.2 + (1 - power_diff) * 0.15
+if total > 0:
+    home_win = (home_power / total) * (1 - base_draw)
+    away_win = (away_power / total) * (1 - base_draw)
+    draw = base_draw
+else:
+    home_win = 0.37
+    away_win = 0.38
+    draw = 0.25
     
     return jsonify({
         'team1': team1,
