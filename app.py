@@ -79,29 +79,35 @@ def predict():
     team1 = request.args.get('team1')
     team2 = request.args.get('team2')
     
-
     form1 = TEAMS_FORM.get(team1, {'wins': 2, 'draws': 1, 'losses': 2})
     form2 = TEAMS_FORM.get(team2, {'wins': 2, 'draws': 1, 'losses': 2})
-
+    
     power1 = (form1['wins'] * 2 + form1['draws'] * 1) / 5
     power2 = (form2['wins'] * 2 + form2['draws'] * 1) / 5
-
+    
     home_power = power1 * 1.2
     away_power = power2 * 0.7
     
     total = home_power + away_power
     
-    base_draw = 0.25
+    max_power = 1.7
+    norm_power1 = min(power1 / max_power, 1)
+    norm_power2 = min(power2 / max_power, 1)
+    
     power_diff = abs(norm_power1 - norm_power2)
-
     draw = 0.2 + (1 - power_diff) * 0.15
-if total > 0:
-    home_win = (home_power / total) * (1 - base_draw)
-    away_win = (away_power / total) * (1 - base_draw)
-else:
-    home_win = 0.37
-    away_win = 0.38
-    draw = 0.25
+    
+    if total > 0:
+        home_win = (home_power / total) * (1 - draw)
+        away_win = (away_power / total) * (1 - draw)
+    else:
+        home_win = 0.37
+        away_win = 0.38
+        draw = 0.25
+        
+    home_win = round(home_win, 2)
+    away_win = round(away_win, 2)
+    draw = round(draw, 2)
     
     return jsonify({
         'team1': team1,
