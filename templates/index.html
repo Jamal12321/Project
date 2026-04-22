@@ -12,7 +12,7 @@
         .result-container {
     width: 100%;
     max-width: 600px;
-    margin-top: 90;
+    margin:30px auto 20px auto;
     padding: 20px;
     background-color: rgba(0,0,0,0.8);
     color: whitesmoke;
@@ -41,7 +41,8 @@
             margin: 0;
             padding: 0;
             font-family: Arial, sans-serif;
-            overflow: hidden;
+            height:100vh;
+            overflow: hidden
         }
 
         .image {
@@ -59,10 +60,9 @@
             flex-direction: column;
             align-items: center;
             justify-content: flex-start;
-            min-height: 100vh;
             margin-top:50px;
             gap: 20px;
-            padding: 50px;
+            padding: 20px;
         }
 
         .button, .predict-button {
@@ -96,9 +96,8 @@
             text-align: center;
             font-weight: bold;
             font-size: 60px;
-            margin-top:60px;
-            padding: 80px 20px 0px 20px;
-            margin-top:80px;
+            margin-top:40px;
+            margin-bottom: 20px;
             color: whitesmoke;
             
         }
@@ -112,7 +111,7 @@
 </head>
 <body>
 
-    <p class="header" style="font-family: Arial Black;background-color: rgba(0, 0, 0, 0.5);">Football guru ⚽</p>
+    <p class="header" style="font-family:' Arial Black';background-color: rgba(0, 0, 0, 0.37);">Football guru ⚽</p>
     <img src="/static/footbal_background.jpg" alt="" class="image">
     
     <div class="container">
@@ -137,7 +136,7 @@
         <button id="predict_button" class="predict-button">Предсказать матч</button>
     </div>
 
-    <div id="result" class="result-container">
+    <div id="result" class="result-container ">
         <div id="result-content"></div>
         <button id="back-button" class="back-button">Новый прогноз</button>
     </div>
@@ -198,16 +197,14 @@
                 alert('Вы выбрали одинаковые команды!');
                 return;
             }
-            
-            
-            resultContent.innerHTML = '<p>Загрузка предсказания...</p>';
             resultContainer.style.display = 'block';
+            resultContainer.innerHTML = '<p style = "font-family:"Arial Black""> Загрузка</p>';
             setTimeout(() => {
                 fetch('/predict?team1=' + encodeURIComponent(hosts) + '&team2=' + encodeURIComponent(guests))
                     .then(response => response.json())
                     .then(data => {
                         
-                        resultContent.innerHTML = `
+                        resultContainer.innerHTML = `
                             <h3>${data.team1} vs ${data.team2}</h3>
                             <p>🏠 Победа ${data.team1}: ${(data.home_win * 100).toFixed(1)}%</p>
                             <p>🤝 Ничья: ${(data.draw * 100).toFixed(1)}%</p>
