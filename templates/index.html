@@ -12,7 +12,7 @@
         .result-container {
     width: 100%;
     max-width: 600px;
-    margin: 40px auto 0 auto;
+    margin-top: 90;
     padding: 20px;
     background-color: rgba(0,0,0,0.8);
     color: whitesmoke;
@@ -41,6 +41,7 @@
             margin: 0;
             padding: 0;
             font-family: Arial, sans-serif;
+            overflow: hidden;
         }
 
         .image {
@@ -61,7 +62,7 @@
             min-height: 100vh;
             margin-top:50px;
             gap: 20px;
-            padding: 80px;
+            padding: 50px;
         }
 
         .button, .predict-button {
@@ -88,7 +89,7 @@
             flex-direction: row;
             justify-content: center;
             gap: 20px;
-            padding:70px;
+            padding:20px;
         }
 
         .header {
@@ -101,9 +102,7 @@
             color: whitesmoke;
             
         }
-        .hide-me {
-            margin-top: auto;
-        }
+
 
         .hidden {
             display: none !important;
@@ -113,10 +112,10 @@
 </head>
 <body>
 
-    <p class="header hide-me" style="font-family: Arial Black;background-color: rgba(0, 0, 0, 0.5);">Football guru ⚽</p>
+    <p class="header" style="font-family: Arial Black;background-color: rgba(0, 0, 0, 0.5);">Football guru ⚽</p>
     <img src="/static/footbal_background.jpg" alt="" class="image">
     
-    <div class="container hide-me">
+    <div class="container">
         <select id="League" class="button">
             <option value="">Выберите лигу</option>
             <option value="PL">EPL</option>
@@ -200,13 +199,9 @@
                 return;
             }
             
-            let hideElements = document.getElementsByClassName('hide-me');
-            for (let i = 0; i < hideElements.length; i++) {
-                hideElements[i].classList.add('hidden');
-            }
             
-
-            
+            resultContent.innerHTML = '<p>Загрузка предсказания...</p>';
+            resultContainer.style.display = 'block';
             setTimeout(() => {
                 fetch('/predict?team1=' + encodeURIComponent(hosts) + '&team2=' + encodeURIComponent(guests))
                     .then(response => response.json())
@@ -218,8 +213,8 @@
                             <p>🤝 Ничья: ${(data.draw * 100).toFixed(1)}%</p>
                             <p>✈️ Победа ${data.team2}: ${(data.away_win * 100).toFixed(1)}%</p>
                         `;
-                        resultContainer.style.display = 'block';
-                        console.log('Данные сервера:', data);
+                        resultContainer.style.zIndex = 9
+                        console.log('Данные сервера:', data)
                     })
                     .catch(error => {
                         console.log('Ошибка:', error);
@@ -230,10 +225,7 @@
 
         backButton.addEventListener('click', function() {
             resultContainer.style.display = 'none';
-            let hideElements = document.getElementsByClassName('hide-me');
-            for (let i = 0; i < hideElements.length; i++) {
-                hideElements[i].classList.remove('hidden');
-            }
+
             document.getElementById('hosts').innerHTML = '<option value="">Сначала выберите лигу</option>';
             document.getElementById('guests').innerHTML = '<option value="">Сначала выберите лигу</option>';
             document.getElementById('League').value = '';
