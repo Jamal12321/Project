@@ -36,17 +36,6 @@
             opacity: 0.9;
         }
 
-        #Prediction {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 9999;
-            background: black;
-            object-fit: cover;
-        }
 
         body {
             margin: 0;
@@ -149,10 +138,6 @@
         <button id="predict_button" class="predict-button">Предсказать матч</button>
     </div>
 
-    <video id="Prediction" style="display: none;" muted loop>
-        <source src="/static/video/loading.mp4" type="video/mp4">
-    </video>
-
     <div id="result" class="result-container">
         <div id="result-content"></div>
         <button id="back-button" class="back-button">Новый прогноз</button>
@@ -160,7 +145,6 @@
 
     <script>
         let selectElement = document.getElementById('League');
-        let video = document.getElementById('Prediction');
         let predictButton = document.getElementById('predict_button');
         let resultContainer = document.getElementById('result');
         let resultContent = document.getElementById('result-content');
@@ -221,15 +205,12 @@
                 hideElements[i].classList.add('hidden');
             }
             
-            video.style.display = 'block';
-            video.play();
+
             
             setTimeout(() => {
                 fetch('/predict?team1=' + encodeURIComponent(hosts) + '&team2=' + encodeURIComponent(guests))
                     .then(response => response.json())
                     .then(data => {
-                        video.style.display = 'none';
-                        video.pause();
                         
                         resultContent.innerHTML = `
                             <h3>${data.team1} vs ${data.team2}</h3>
@@ -242,8 +223,6 @@
                     })
                     .catch(error => {
                         console.log('Ошибка:', error);
-                        video.style.display = 'none';
-                        video.pause();
                         alert('Ошибка при получении предсказания');
                     });
             }, 3500);
