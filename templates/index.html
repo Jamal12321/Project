@@ -13,23 +13,23 @@
     width: 100%;
     max-width: 600px;
     margin:30px auto 20px auto;
-    padding: 20px;
+    padding: 10px;
     background-color: rgba(0,0,0,0.8);
     color: whitesmoke;
-    border-radius: 10px;
+    border-radius:10px;
     text-align: center;
     display: none;
     box-sizing: border-box;
 }
         .back-button {
-            margin-top: 20px;
-            padding: 10px 20px;
+            margin:30px auto 20px auto;
+            padding:10px;
             background-color: gray;
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 5px;
             cursor: pointer;
-            font-size: 18px;
+            font-size: 16px;
         }
 
         .back-button:hover {
@@ -162,13 +162,18 @@
                     guests.innerHTML = '';
                     
                     let defaultOption = document.createElement('option');
+                    let defaultOption2 = document.createElement('option')
                     defaultOption.value = '';
                     defaultOption.text = 'Выберите команду';
                     defaultOption.selected = true;
                     defaultOption.disabled = true;
-                    
-                    hosts.appendChild(defaultOption);
-                    guests.appendChild(defaultOption.cloneNode(true));
+
+                    defaultOption2.value = '';
+                    defaultOption2.text = 'Выберите команду';
+                    defaultOption2.selected = true;
+                    defaultOption2.disabled = true;
+                    hosts.appendChild(defaultOption,hosts.firstChild);
+                    guests.appendChild(defaultOption2,guests.firstChild);
                     
                     data.forEach(team => {
                         let opt1 = document.createElement('option');
@@ -188,7 +193,7 @@
         predictButton.addEventListener('click', function() {
             let hosts = document.getElementById('hosts').value;
             let guests = document.getElementById('guests').value;
-            
+
             if (!hosts || !guests) {
                 alert('Сначала выберите обе команды!');
                 return;
@@ -198,20 +203,21 @@
                 return;
             }
             resultContainer.style.display = 'block';
-            resultContainer.innerHTML = '<p style = "font-family:"Arial Black""> Загрузка</p>';
+            resultContent.innerHTML = '<h3 style = "font-family:"Arial Black""> Загрузка</h3>';
+
             setTimeout(() => {
                 fetch('/predict?team1=' + encodeURIComponent(hosts) + '&team2=' + encodeURIComponent(guests))
                     .then(response => response.json())
                     .then(data => {
                         
-                        resultContainer.innerHTML = `
+                        resultContent.innerHTML = `
                             <h2>-----------Результат предсказания-----------</h3>
                             <h3>${data.team1} vs ${data.team2}</h3>
                             <p>🏠 Победа ${data.team1}: ${(data.home_win * 100).toFixed(1)}%</p>
                             <p>🤝 Ничья: ${(data.draw * 100).toFixed(1)}%</p>
                             <p>✈️ Победа ${data.team2}: ${(data.away_win * 100).toFixed(1)}%</p>
                         `;
-                        resultContainer.style.zIndex = 9
+                        resultContent.style.zIndex = 9
                         console.log('Данные сервера:', data)
                     })
                     .catch(error => {
