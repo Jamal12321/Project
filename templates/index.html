@@ -205,6 +205,7 @@
                     .then(data => {
                         
                         resultContainer.innerHTML = `
+                            <h2>-----------Результат предсказания-----------</h3>
                             <h3>${data.team1} vs ${data.team2}</h3>
                             <p>🏠 Победа ${data.team1}: ${(data.home_win * 100).toFixed(1)}%</p>
                             <p>🤝 Ничья: ${(data.draw * 100).toFixed(1)}%</p>
